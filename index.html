@@ -1,0 +1,939 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+            *{
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            }
+
+            /**************************** TABLE STYLES ****************************/   
+			.table-container{
+				display: none;
+			}
+
+            table {
+                /* border-collapse sets the table's elements to share borders, rather than floating as separate "boxes". */
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            td,
+            th {
+                border: .0625rem solid rgb(189, 189, 189);
+                text-align: left;
+                padding: .5rem;
+            }
+
+
+            th {
+                background: #f8f9fa;
+            }
+
+
+            tr:nth-child(even) {
+                /* Set every other cell slightly darker. Improves readability. */
+                background: #f8f9fa;
+            }
+
+            table caption {
+                font-weight: bold;
+                margin-bottom: .6rem;
+            }
+
+                        
+            /* BUTTONS */
+            a /* Link */ button,
+            button,
+            input[type="submit"],
+            input[type="reset"],
+            input[type="button"] {
+                display: inline-block;
+                padding: 6px 12px;
+                text-align: center;
+                text-decoration: none;
+                white-space: nowrap;
+                background: #d2f1fa;
+                border: none;
+                border-radius: .45em;
+                box-sizing: border-box;
+                cursor: pointer;
+            }
+
+            button:hover{
+                background-color: #6fd4f0;
+            }
+            /**************************** TABLE STYLES ****************************/
+
+
+            button:active{
+                background-color: #40a2bd;
+            }
+
+            label{
+                margin-right: 1rem;
+                font-size: 1.2rem;
+            }
+
+            .form-container {
+                margin-top: .5rem;
+                display: block;
+                text-align: center;
+                display: none;
+            }
+
+            .card{
+                background-color: #c9e5ed;
+                width: 20%;
+                margin: auto;
+                border-radius: 5px;
+                padding: 1.5rem;
+            }
+
+            form{
+                display: inline-block;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: left;
+            }
+
+            form > label, form > input {
+                display:block;
+            }
+
+            form > input {
+                margin-bottom: .2rem;
+            }
+
+            .form-select{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: left;
+                visibility: hidden;
+            }
+
+            .abm-buttons{
+                margin-top: .5rem;
+            }
+
+            .add-btn-container{
+                text-align: center;  
+                width: 100%;
+            }
+
+            .add-btn{
+                margin-top: .8rem;
+                text-align: center;
+				display: none;
+            }
+
+
+            /**************************** SPINNER ****************************/
+			.spinner-container{
+				background-color: rgba(0, 0, 0, 0.695);
+				width: 102vw;
+				height: 100vh;
+				position:fixed;
+				margin-left: -1rem;
+				margin-right: -1rem;
+				display: flex;
+			}
+
+			.lds-roller {
+				display: inline-block;
+				position: relative;
+				width: 80px;
+				height: 80px;
+				margin: auto;
+			}
+			.lds-roller div {
+				animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+				transform-origin: 40px 40px;
+			}
+			.lds-roller div:after {
+				content: " ";
+				display: block;
+				position: absolute;
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: #fff;
+				margin: -4px 0 0 -4px;
+			}
+			.lds-roller div:nth-child(1) {
+				animation-delay: -0.036s;
+			}
+			.lds-roller div:nth-child(1):after {
+				top: 63px;
+				left: 63px;
+			}
+			.lds-roller div:nth-child(2) {
+				animation-delay: -0.072s;
+			}
+			.lds-roller div:nth-child(2):after {
+				top: 68px;
+				left: 56px;
+			}
+			.lds-roller div:nth-child(3) {
+				animation-delay: -0.108s;
+			}
+			.lds-roller div:nth-child(3):after {
+				top: 71px;
+				left: 48px;
+			}
+			.lds-roller div:nth-child(4) {
+				animation-delay: -0.144s;
+			}
+			.lds-roller div:nth-child(4):after {
+				top: 72px;
+				left: 40px;
+			}
+			.lds-roller div:nth-child(5) {
+				animation-delay: -0.18s;
+			}
+			.lds-roller div:nth-child(5):after {
+				top: 71px;
+				left: 32px;
+			}
+			.lds-roller div:nth-child(6) {
+				animation-delay: -0.216s;
+			}
+			.lds-roller div:nth-child(6):after {
+				top: 68px;
+				left: 24px;
+			}
+			.lds-roller div:nth-child(7) {
+				animation-delay: -0.252s;
+			}
+			.lds-roller div:nth-child(7):after {
+				top: 63px;
+				left: 17px;
+			}
+			.lds-roller div:nth-child(8) {
+				animation-delay: -0.288s;
+			}
+			.lds-roller div:nth-child(8):after {
+				top: 56px;
+				left: 12px;
+			}
+			@keyframes lds-roller {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+			}
+
+            /**************************** SPINNER ****************************/
+
+        </style>
+    </head>
+    <body>
+
+		<!-- SPINNER -->
+		<div id="spinnerContainer" class="spinner-container">
+			<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+		</div>
+		<!-- SPINNER -->
+
+
+		<div id="tableContainer" class="table-container">
+			<table id="dataTable" class="content-table">
+					<thead id="tableHead">
+						<th> </th>
+				</thead>
+				<tbody id="tableBody">
+					<tr>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+        <div class="add-btn-container">
+            <button onclick="onAdd()" id="addButton" class="add-btn">Agregar</button>
+        </div>
+
+        <div class="form-container" id="formContainer">
+            <div class="card">
+                <select class="form-select" name="formSelect" id="formSelect">
+                    <option value="Docente">Docente</option>
+                    <option value="Alumno">Alumno</option>
+                </select>
+                <form id="abmForm">
+                </form>
+                <div class="abm-buttons">
+                    <button id="deleteButton" onclick="onDeleteForm()">Eliminar</button>
+                    <button id="editButton" onclick="onEdit()">Modificar</button>
+                    <button onclick="onCancel()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+
+    <script>
+		
+
+
+
+        //let strJson = '[{"id":1,"dni":17663295,"nombre":"FABIAN MARCELO","apellido":"ABADIE","cursoNumero":1,"cursoLetra":"F"},{"id":2,"dni":38724762,"nombre":"MAIRA DAIANA","apellido":"ABALOS","cursoNumero":3,"cursoLetra":"M"},{"id":3,"dni":25447357,"nombre":"NOELIA LIDIA","apellido":"ABBA","cursoNumero":2,"cursoLetra":"N"},{"id":4,"dni":27577699,"nombre":"MARÍA SOLEDAD","apellido":"ACHOR","cursoNumero":2,"cursoLetra":"M"},{"id":900,"dni":11496581,"nombre":"JOSE MIGUEL","apellido":"ARMALEO","materia":"Fisica","año":1},{"id":899,"dni":35326658,"nombre":"ROSA DEL VALLE","apellido":"LOPEZ","materia":"Lengua","año":3},{"id":898,"dni":39638351,"nombre":"DANIELA BELEN","apellido":"BROGGI D`ATENA","materia":"Matematica","año":3},{"id":897,"dni":17275566,"nombre":"PABLO ALBERTO","apellido":"ALMEIDA","materia":"Quimica","año":1}]'
+
+		let strJson = '';
+
+        var propNames = ['id', 'dni', 'nombre', 'apellido',  'cursoNumero', 'cursoLetra', 'materia', 'año' ];
+        var tableHeaders = ['Id', 'DNI', 'Nombre', 'Apellido', 'CursoNumero', 'CursoLetra', 'Materia', 'Año', 'Modificar', 'Eliminar'];
+        var filterValue = '';
+        var isFormActivated = false;
+		let finalOutputArray;
+
+		function getInitialData(){
+			var xhttp = new XMLHttpRequest(); //Instancio el objeto
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4)
+				{
+					if (this.status == 200) {
+						//Acción a ejecutar cuando el estado es 200 ok y el readyState=4 (respuesta lista)
+						
+						toggleTable();
+						
+						strJson = this.responseText;
+
+						let newArray = jsonToArray(strJson); // Parsea los datos obtenidos a array
+
+						finalOutputArray = arrayToObject(newArray); // Convierte el array al objeto correspondiente
+
+						renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+						let btn = document.getElementById('addButton');
+						btn.style.display = 'initial';
+
+						toggleSpinner();
+					}else{
+						serverError();
+					}
+				}
+				
+			}; //Configúro manejador para cambio de estado
+			xhttp.open("GET", "https://localhost:5001/Personas", true); //Inicializo la solicitud
+			xhttp.send(); //Envio la solicitud
+		}
+
+        function jsonToArray(jsonString){
+            return JSON.parse(jsonString);
+        }
+
+        class Persona {
+            id;
+            dni;
+            apellido;
+            nombre;
+
+            constructor(id, dni, apellido, nombre) {
+                this.dni = dni;
+                this.apellido = apellido;
+                this.nombre = nombre;
+
+                if (id) {
+                    this.id = id;
+                } else {
+                    this.id = getMaxId() + 1;
+                }
+            }
+
+            toString(){
+                let finalString = '';
+                let objToArray = Object.entries(this);
+
+                objToArray.map((element) => {
+                    let key = element[0];
+                    let value = element[1] || '';
+                    finalString += key + ': ' + value + ' - ';
+                });
+                return finalString;
+            }
+        }
+
+
+        class Alumno extends Persona {
+            cursoLetra;
+            cursoNumero;
+
+            constructor(id, dni, apellido, nombre, cursoLetra, cursoNumero) {
+                super(id, dni, apellido, nombre);
+
+                this.cursoLetra = cursoLetra;
+                this.cursoNumero = cursoNumero;
+            }
+
+			setCursoLetra(letter){
+				letter = letter.toUpperCase();
+				console.log('LETRA ', letter);
+				let acceptedValues = ['A', 'B', 'C', 'D', 'E']
+				if (acceptedValues.includes(letter)) {
+					this.cursoLetra = letter;
+					console.log('LETRA CARGADO ', this.cursoLetra);
+				}
+			}
+
+			setCursoNumero(num){
+				if (num >= 1 && num <= 5) {
+					this.cursoNumero = num;
+					console.log('NUM CARGADO ', this.cursoNumero);
+				}
+			}
+
+            toString(){
+                let finalString = '';
+                let objToArray = Object.entries(this);
+
+                objToArray.map((element) => {
+                    let key = element[0];
+                    let value = element[1] || '';
+                    finalString += key + ': ' + value + ' - ';
+                });
+                return finalString;
+            }
+        }
+
+
+        class Docente extends Persona {
+            materia;
+            año;
+
+            constructor(id, dni, apellido, nombre, materia, año) {
+                super(id, dni, apellido, nombre);
+
+                this.materia = materia;
+                this.año = año;
+            }
+
+			setMateria(materia){
+				let acceptedValues = ['Matemática', 'Inglés', 'Lengua' ]
+				if (acceptedValues.includes(materia)) {
+					this.materia = materia;
+				}
+			}
+
+			setAño(num){
+				let acceptedValues = [1, 2, 3, 4, 5]
+				if (acceptedValues.includes(num)) {
+					this.año = num;
+				}
+			}
+
+            toString(){
+                let finalString = '';
+                let objToArray = Object.entries(this);
+
+                objToArray.map((element) => {
+                    let key = element[0];
+                    let value = element[1];
+                    finalString += key + ': ' + value + '  ';
+                });
+                return finalString;
+            }
+        }
+
+        
+        function arrayToObject(arr) {
+            let finalArray = new Array();
+            let finalElement;
+            arr.forEach(e => {
+                if( e.hasOwnProperty('cursoLetra') || e.hasOwnProperty('cursoNumero')) {
+                    finalElement = new Alumno( e.id, e.dni, e.apellido, e.nombre, e.cursoLetra, e.cursoNumero );
+                } else if (e.hasOwnProperty('materia') || e.hasOwnProperty('año')) {
+                    finalElement = new Docente( e.id, e.dni, e.apellido, e.nombre, e.materia, e.año );
+                }
+
+                finalArray.push(finalElement);
+            });
+            return finalArray;
+        }
+
+        function getMaxId() {
+            let maxId = finalOutputArray.map(x => { return x.id });
+            maxId = Math.max(...maxId);
+
+            return maxId;
+        }
+
+
+        /********************** CREACIÓN DE LA TABLA **********************/
+
+
+        function createTableHeaders(headers) {
+            let tableHead = document.getElementById('tableHead');
+            tableHead.innerHTML = '';
+
+            for (let i = 0; i < headers.length; i++) {
+                const header = headers[i];
+
+
+				let th = document.createElement("th");				
+				th.appendChild(document.createTextNode(header));
+				tableHead.appendChild(th);
+            }
+        }
+
+        function createTableContent(dataSource, columnNames) {
+            let tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            dataSource.forEach(e => {
+                tr = document.createElement("tr");
+                tr.setAttribute('id', e.id);
+
+                for (let i = 0; i < columnNames.length; i++) {
+                    const column = columnNames[i];
+                    const header = tableHeaders[i];
+
+					td = document.createElement("td");
+					let cellText = e[column] || 'N/A';
+					
+					td.appendChild(document.createTextNode(cellText));
+					tr.appendChild(td);
+                }
+
+				/********* BOTÓN MODIFICAR ********/
+				td = document.createElement("td");
+				btn = document.createElement("button");
+				let btnText = 'Modificar';
+				btn.appendChild(document.createTextNode(btnText));
+
+				btn.addEventListener('click', function onRowDoubleClicked(event) {
+                    renderForm(e, true);
+                    
+                });
+
+				td.appendChild(btn);
+				tr.appendChild(td);
+
+				/********* BOTÓN Eliminar ********/
+				td = document.createElement("td");
+				btn = document.createElement("button");
+				btnText = 'Eliminar';
+
+				btn.addEventListener('click', function onRowDoubleClicked(event) {
+                    renderForm(e, true);
+                    
+                });
+
+				btn.appendChild(document.createTextNode(btnText));
+				td.appendChild(btn);
+				tr.appendChild(td);
+
+                tableBody.appendChild(tr);
+
+                let row = document.getElementById(e.id);
+                row.addEventListener('dblclick', function onRowDoubleClicked(event) {
+                    renderForm(e, true);
+                    
+                });
+            });
+        }
+        
+
+        function renderTable(fullDataSource, columnNames, filterCriteria, filterValue) {
+
+            let filteredData = fullDataSource.filter(filterCriteria(filterValue));
+
+            createTableHeaders(tableHeaders);
+            createTableContent(filteredData, columnNames);
+        }
+
+        function calculateValue(fullDataSource, filterCriteria, filterValue){
+            let filteredData = fullDataSource.filter(filterCriteria(filterValue));
+            let avg = filteredData
+                .map( function(a){ return a.id } )
+                .reduce( function(a,b){ return (+a) + (+b) },) / filteredData.length;
+            
+            return avg;
+        }
+
+
+        function filterCriteria(selectedValue){
+
+            return function filterObj(persona) {
+                switch (selectedValue) {
+                    case 'Alumno':
+                        return persona.hasOwnProperty('cursoNumero');
+                        break;
+                    case 'Docente':
+                        return !persona.hasOwnProperty('cursoNumero');
+                        break;
+                    default:
+                        return true;
+                    break;
+                }
+            }
+        }
+
+		function toggleTable() {
+			let tableContainer = document.getElementById('tableContainer');
+			if (tableContainer.style.display == 'none' || !tableContainer.style.display) {
+				tableContainer.style.display = 'flex'
+				return;
+			}
+            tableContainer.style.display = 'none'; 
+		}
+
+		function toggleSpinner() {
+			let spinnerContainer = document.getElementById('spinnerContainer');
+			if (spinnerContainer.style.display == 'none') {
+				spinnerContainer.style.display = 'flex'
+				return;
+			}
+            spinnerContainer.style.display = 'none'; 
+		}
+        /********************** FIN CREACIÓN DE LA TABLA **********************/
+
+
+        /********************** FORM **********************************/
+        function renderForm(obj, isEditMode){
+			toggleTable();
+
+            let form = document.getElementById('abmForm');
+            form.innerHTML = '';
+
+            let formSelect = document.getElementById('formSelect');
+            let className = formSelect.value;
+            let objToArray;
+
+            if (obj) {
+                formSelect.value = obj.constructor.name;
+            }else {
+                switch (className) {
+                case 'Docente':
+                    obj = new Docente();
+					obj.id = null
+                    break;
+                case 'Alumno':
+                    obj = new Alumno();
+					obj.id = null
+                    break;
+                }
+            }
+
+            objToArray = Object.entries(obj);
+
+            objToArray.map((element) => {
+                let key = element[0];
+                let value = element[1] || '';
+
+                let label = document.createElement('label');
+                
+                label.appendChild( document.createTextNode(key.charAt(0).toUpperCase() + key.slice(1)) );
+
+                let input = document.createElement('input');
+                input.value = value;
+                input.setAttribute('id', 'input' + key);
+                input.setAttribute('class', 'form-input');
+
+                label.setAttribute('for', 'input' + key);
+
+                form.appendChild(label);
+                form.appendChild(input);
+
+                let formContainer = document.getElementById('formContainer');
+                formContainer.style.display = 'block'; 
+            })
+
+            let idInput = document.getElementById('inputid');
+            idInput.readOnly = true;
+
+            isFormActivated = true;
+            editMode(isEditMode);
+            if (isEditMode) {
+                formSelect.style.visibility = 'hidden';
+            }else {
+                formSelect.style.visibility = 'visible';
+            }
+        }
+
+        function hideForm() {
+			toggleTable();
+            let formContainer = document.getElementById('formContainer');
+            formContainer.style.display = 'none'; 
+            isFormActivated = false;
+
+            let addButton = document.getElementById('addButton');
+            addButton.disabled = false;
+        }
+
+		let formSelect = document.getElementById('formSelect');
+        formSelect.addEventListener('change', function onChange(event){
+            renderForm();
+			toggleTable();
+        })
+
+
+        function editMode(toggle) { 
+            let editButton = document.getElementById('editButton');
+            let deleteButton = document.getElementById('deleteButton');
+            let addButton = document.getElementById('addButton');
+
+            if (toggle) {
+                editButton.disabled = false;
+                deleteButton.disabled = false;
+                addButton.disabled = true; 
+            }else {
+                editButton.disabled = true;
+                deleteButton.disabled = true;
+                addButton.disabled = false; 
+            }
+        }
+        /******************* FIN FORM *********************************/ 
+
+        /************************** ABM ******************************/
+        function getInputsValues(){
+            let inputsArray = Array.from(document.getElementsByClassName('form-input'));
+            let valuesArray = inputsArray.map(input => input.value);
+            return valuesArray;
+        }
+
+        function fillInputsValues(){ // TODO: Completar con los valores del objeto obtenido.
+            let inputsArray = Array.from(document.getElementsByClassName('form-input'));
+            inputsArray.map(input => input.value = 3);
+        }
+
+        function onAdd(){
+            if (isFormActivated) {
+                let selectedValue = document.getElementById('formSelect').value;
+                let valuesArray = getInputsValues();
+                let newObj;
+                let target;
+
+				toggleSpinner();
+
+                valuesArray[0] = 0; // Pongo el ID para que pase la validación. Luego se sobreescribe.
+
+                switch (selectedValue) {
+                    case 'Docente':
+						newObj = new Docente();
+						newObj.id = valuesArray[0];
+						newObj.dni = valuesArray[1];
+						newObj.apellido = valuesArray[2];
+						newObj.nombre = valuesArray[3];
+						newObj.setMateria(valuesArray[4]);
+						newObj.setAño(valuesArray[5]);
+						break;
+					case 'Alumno':
+						newObj = new Alumno();
+						newObj.id = valuesArray[0];
+						newObj.dni = valuesArray[1];
+						newObj.apellido = valuesArray[2];
+						newObj.nombre = valuesArray[3];
+						newObj.setCursoLetra(valuesArray[4]);
+						newObj.setCursoNumero(valuesArray[5]);
+						break;
+                }
+
+                    if (inputValidation(newObj)) {
+						putDataByFetch('https://localhost:5001/Personas/Insertar' + selectedValue, newObj)
+						.then(response => {
+							if (response.status = 200) {
+								response.text().then(text => {
+									newObj.id = text;
+									console.log(newObj.toString());
+									finalOutputArray.push(newObj);
+								})
+							} else {
+								serverError();
+							}
+							toggleSpinner();
+							renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+							hideForm()
+						});
+
+                    }else {
+                        alert('Ha habido un error en los datos ingresados');
+                    }
+            }else {
+                renderForm(null, false);
+            }
+        }
+
+        function inputValidation(obj){
+            validationResult = false;
+            if (obj) {
+                if (obj.dni && obj.apellido && obj.nombre && !isNaN(obj.id) && !isNaN(obj.dni) && isNaN(obj.apellido) && isNaN(obj.nombre)) {
+                    className = obj.constructor.name;
+                    switch (className) {
+                        case 'Docente':
+                            if (obj.materia && obj.año && isNaN(obj.materia) && !isNaN(obj.año)) {
+                                validationResult = true;
+                            }
+                            break;
+                        case 'Alumno': 
+							console.log(obj);
+                            if (obj.cursoLetra && obj.cursoNumero && isNaN(obj.cursoLetra) && !isNaN(obj.cursoNumero) && obj.cursoLetra.length < 2) {
+                                validationResult = true;
+                            }
+                            break;
+                    }
+                }
+            }
+            return validationResult;
+        }
+
+        function onEdit(){
+            let selectedValue = document.getElementById('formSelect').value;
+            let valuesArray = getInputsValues();
+            let newObj;
+            let target;
+
+            switch (selectedValue) {
+                case 'Docente':
+                    newObj = new Docente();
+                    newObj.id = valuesArray[0];
+                    newObj.dni = valuesArray[1];
+                    newObj.apellido = valuesArray[2];
+                    newObj.nombre = valuesArray[3];
+                    newObj.setMateria(valuesArray[4]);
+                    newObj.setAño(valuesArray[5]);
+                    break;
+                case 'Alumno':
+					newObj = new Alumno();
+                    newObj.id = valuesArray[0];
+                    newObj.dni = valuesArray[1];
+                    newObj.apellido = valuesArray[2];
+                    newObj.nombre = valuesArray[3];
+                    newObj.setCursoLetra(valuesArray[4]);
+                    newObj.setCursoNumero(valuesArray[5]);
+                    break;
+            }
+            if (inputValidation(newObj) ) {
+                targetIndex = finalOutputArray.findIndex((e) => {
+                    return e.id == newObj.id;
+                })
+
+				toggleSpinner();
+				postDataByFetchAsync('https://localhost:5001/Personas/Modificar' + selectedValue, newObj).then( response => {
+					toggleSpinner();
+					if (response.status = 200) {
+						finalOutputArray[targetIndex] = newObj;
+					} else {
+						serverError();
+					}
+					
+					hideForm();
+					renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+				});
+            }else {
+                alert('Ha habido un error en los datos ingresados.');
+            }
+        }
+
+		async function postDataByFetchAsync(url = '', data = {}) {
+			console.log(url);
+			console.log(JSON.stringify(data));
+			// Opciones por defecto estan marcadas con un *
+			const response = await fetch(url, {
+				method: 'POST', // *GET, POST, PUT, DELETE, etc.
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data) // body data type must match "Content-Type" header
+			});
+			return response;
+		}
+
+		async function putDataByFetchAsync(url = '', data = {}) {
+			console.log(url);
+			console.log(JSON.stringify(data));
+			// Opciones por defecto estan marcadas con un *
+			const response = await fetch(url, {
+				method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data) // body data type must match "Content-Type" header
+			});
+			return response;
+		}
+
+		function postDataByFetch(url = '', data = {}) {
+			console.log(url);
+			console.log(JSON.stringify(data));
+			// Opciones por defecto estan marcadas con un *
+			const response = fetch(url, {
+				method: 'POST', // *GET, POST, PUT, DELETE, etc.
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data) // body data type must match "Content-Type" header
+			});
+			return response;
+		}
+
+		function putDataByFetch(url = '', data = {}) {
+			console.log(url);
+			console.log(JSON.stringify(data));
+			// Opciones por defecto estan marcadas con un *
+			const response = fetch(url, {
+				method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data) // body data type must match "Content-Type" header
+			});
+			return response;
+		}
+
+
+
+		function serverError(){
+			alert('Ha habido un error en la petición al servidor.');
+		}
+
+
+        function onDeleteForm(){
+			toggleSpinner();
+            let id = document.getElementById('inputid').value;
+
+			var xhttp = new XMLHttpRequest(); //Instancio el objeto
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4)
+				{
+					if (this.status == 200) {
+						//Acción a ejecutar cuando el estado es 200 ok y el readyState=4 (respuesta lista)
+						
+						finalOutputArray = finalOutputArray.filter(x => x.id != id);
+						renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+						hideForm();
+
+						toggleSpinner();
+					}else{
+						serverError();
+						toggleSpinner();
+					}
+				}
+				
+			}; //Configúro manejador para cambio de estado
+			xhttp.open("DELETE", "https://localhost:5001/Personas/EliminarPersona", true); //Inicializo la solicitud
+			xhttp.setRequestHeader('Content-Type', 'application/json');
+			let requestBody = JSON.stringify( finalOutputArray.filter(x => x.id == id)[0]);
+			xhttp.send( requestBody ); //Envio la solicitud
+        }
+
+        function onCancel() {
+            hideForm();
+        }
+        /************************** ABM ******************************/
+
+
+
+        
+        /************************ MAIN ***********************/
+		getInitialData(); // Obtiene los datos del servidor
+
+        
+
+        /******************** FIN MAIN **********************/
+    </script>
+</html>
