@@ -261,8 +261,8 @@
         <div class="form-container" id="formContainer">
             <div class="card">
                 <select class="form-select" name="formSelect" id="formSelect">
-                    <option value="Docente">Docente</option>
-                    <option value="Alumno">Alumno</option>
+                    <option value="Camioneta">Camioneta</option>
+                    <option value="Auto">Auto</option>
                 </select>
                 <form id="abmForm">
                 </form>
@@ -282,12 +282,11 @@
 
 
 
-        //let strJson = '[{"id":1,"dni":17663295,"nombre":"FABIAN MARCELO","apellido":"ABADIE","cursoNumero":1,"cursoLetra":"F"},{"id":2,"dni":38724762,"nombre":"MAIRA DAIANA","apellido":"ABALOS","cursoNumero":3,"cursoLetra":"M"},{"id":3,"dni":25447357,"nombre":"NOELIA LIDIA","apellido":"ABBA","cursoNumero":2,"cursoLetra":"N"},{"id":4,"dni":27577699,"nombre":"MARÍA SOLEDAD","apellido":"ACHOR","cursoNumero":2,"cursoLetra":"M"},{"id":900,"dni":11496581,"nombre":"JOSE MIGUEL","apellido":"ARMALEO","materia":"Fisica","año":1},{"id":899,"dni":35326658,"nombre":"ROSA DEL VALLE","apellido":"LOPEZ","materia":"Lengua","año":3},{"id":898,"dni":39638351,"nombre":"DANIELA BELEN","apellido":"BROGGI D`ATENA","materia":"Matematica","año":3},{"id":897,"dni":17275566,"nombre":"PABLO ALBERTO","apellido":"ALMEIDA","materia":"Quimica","año":1}]'
 
 		let strJson = '';
 
-        var propNames = ['id', 'dni', 'nombre', 'apellido',  'cursoNumero', 'cursoLetra', 'materia', 'año' ];
-        var tableHeaders = ['Id', 'DNI', 'Nombre', 'Apellido', 'CursoNumero', 'CursoLetra', 'Materia', 'Año', 'Modificar', 'Eliminar'];
+        var propNames = ['id', 'fabricante', 'modelo', 'añoLanzamiento', 'cantidadPuertas', 'transmision4x4', '' ];
+        var tableHeaders = ['Id', 'Fabricante', 'Modelo', 'Año de lanzamiento', 'Cantidad de puertas', 'Transmisión 4x4', 'Modificar', 'Eliminar'];
         var filterValue = '';
         var isFormActivated = false;
 		let finalOutputArray;
@@ -329,14 +328,14 @@
 
         class Persona {
             id;
-            dni;
-            apellido;
-            nombre;
+            fabricante;
+            modelo;
+            añoLanzamiento;
 
-            constructor(id, dni, apellido, nombre) {
-                this.dni = dni;
-                this.apellido = apellido;
-                this.nombre = nombre;
+            constructor(id, fabricante, modelo, añoLanzamiento) {
+                this.fabricante = fabricante;
+                this.modelo = modelo;
+                this.añoLanzamiento = añoLanzamiento;
 
                 if (id) {
                     this.id = id;
@@ -359,15 +358,13 @@
         }
 
 
-        class Alumno extends Persona {
-            cursoLetra;
-            cursoNumero;
+        class Auto extends Persona {
+            cantidadPuertas;
 
-            constructor(id, dni, apellido, nombre, cursoLetra, cursoNumero) {
-                super(id, dni, apellido, nombre);
+            constructor(id, fabricante, modelo, añoLanzamiento, cantidadPuertas) {
+                super(id, fabricante, modelo, añoLanzamiento);
 
-                this.cursoLetra = cursoLetra;
-                this.cursoNumero = cursoNumero;
+                this.cantidadPuertas = cantidadPuertas;
             }
 
 			setCursoLetra(letter){
@@ -375,15 +372,8 @@
 				console.log('LETRA ', letter);
 				let acceptedValues = ['A', 'B', 'C', 'D', 'E']
 				if (acceptedValues.includes(letter)) {
-					this.cursoLetra = letter;
-					console.log('LETRA CARGADO ', this.cursoLetra);
-				}
-			}
-
-			setCursoNumero(num){
-				if (num >= 1 && num <= 5) {
-					this.cursoNumero = num;
-					console.log('NUM CARGADO ', this.cursoNumero);
+					this.cantidadPuertas = letter;
+					console.log('LETRA CARGADO ', this.cantidadPuertas);
 				}
 			}
 
@@ -401,28 +391,19 @@
         }
 
 
-        class Docente extends Persona {
-            materia;
-            año;
+        class Camioneta extends Persona {
+            transmision4x4;
 
-            constructor(id, dni, apellido, nombre, materia, año) {
-                super(id, dni, apellido, nombre);
+            constructor(id, fabricante, modelo, añoLanzamiento, transmision4x4, ) {
+                super(id, fabricante, modelo, añoLanzamiento);
 
-                this.materia = materia;
-                this.año = año;
+                this.transmision4x4 = transmision4x4;
             }
 
-			setMateria(materia){
+			setMateria(transmision4x4){
 				let acceptedValues = ['Matemática', 'Inglés', 'Lengua' ]
-				if (acceptedValues.includes(materia)) {
-					this.materia = materia;
-				}
-			}
-
-			setAño(num){
-				let acceptedValues = [1, 2, 3, 4, 5]
-				if (acceptedValues.includes(num)) {
-					this.año = num;
+				if (acceptedValues.includes(transmision4x4)) {
+					this.transmision4x4 = transmision4x4;
 				}
 			}
 
@@ -444,10 +425,10 @@
             let finalArray = new Array();
             let finalElement;
             arr.forEach(e => {
-                if( e.hasOwnProperty('cursoLetra') || e.hasOwnProperty('cursoNumero')) {
-                    finalElement = new Alumno( e.id, e.dni, e.apellido, e.nombre, e.cursoLetra, e.cursoNumero );
-                } else if (e.hasOwnProperty('materia') || e.hasOwnProperty('año')) {
-                    finalElement = new Docente( e.id, e.dni, e.apellido, e.nombre, e.materia, e.año );
+                if( e.hasOwnProperty('cantidadPuertas')) {
+                    finalElement = new Auto( e.id, e.fabricante, e.modelo, e.añoLanzamiento, e.cantidadPuertas);
+                } else if (e.hasOwnProperty('transmision4x4')) {
+                    finalElement = new Camioneta( e.id, e.fabricante, e.modelo, e.añoLanzamiento, e.transmision4x4);
                 }
 
                 finalArray.push(finalElement);
@@ -560,11 +541,11 @@
 
             return function filterObj(persona) {
                 switch (selectedValue) {
-                    case 'Alumno':
-                        return persona.hasOwnProperty('cursoNumero');
+                    case 'Auto':
+                        return persona.hasOwnProperty('');
                         break;
-                    case 'Docente':
-                        return !persona.hasOwnProperty('cursoNumero');
+                    case 'Camioneta':
+                        return !persona.hasOwnProperty('');
                         break;
                     default:
                         return true;
@@ -608,12 +589,12 @@
                 formSelect.value = obj.constructor.name;
             }else {
                 switch (className) {
-                case 'Docente':
-                    obj = new Docente();
+                case 'Camioneta':
+                    obj = new Camioneta();
 					obj.id = null
                     break;
-                case 'Alumno':
-                    obj = new Alumno();
+                case 'Auto':
+                    obj = new Auto();
 					obj.id = null
                     break;
                 }
@@ -713,21 +694,21 @@
                 valuesArray[0] = 0; // Pongo el ID para que pase la validación. Luego se sobreescribe.
 
                 switch (selectedValue) {
-                    case 'Docente':
-						newObj = new Docente();
+                    case 'Camioneta':
+						newObj = new Camioneta();
 						newObj.id = valuesArray[0];
-						newObj.dni = valuesArray[1];
-						newObj.apellido = valuesArray[2];
-						newObj.nombre = valuesArray[3];
+						newObj.fabricante = valuesArray[1];
+						newObj.modelo = valuesArray[2];
+						newObj.añoLanzamiento = valuesArray[3];
 						newObj.setMateria(valuesArray[4]);
 						newObj.setAño(valuesArray[5]);
 						break;
-					case 'Alumno':
-						newObj = new Alumno();
+					case 'Auto':
+						newObj = new Auto();
 						newObj.id = valuesArray[0];
-						newObj.dni = valuesArray[1];
-						newObj.apellido = valuesArray[2];
-						newObj.nombre = valuesArray[3];
+						newObj.fabricante = valuesArray[1];
+						newObj.modelo = valuesArray[2];
+						newObj.añoLanzamiento = valuesArray[3];
 						newObj.setCursoLetra(valuesArray[4]);
 						newObj.setCursoNumero(valuesArray[5]);
 						break;
@@ -761,17 +742,17 @@
         function inputValidation(obj){
             validationResult = false;
             if (obj) {
-                if (obj.dni && obj.apellido && obj.nombre && !isNaN(obj.id) && !isNaN(obj.dni) && isNaN(obj.apellido) && isNaN(obj.nombre)) {
+                if (obj.fabricante && obj.modelo && obj.añoLanzamiento && !isNaN(obj.id) && !isNaN(obj.fabricante) && isNaN(obj.modelo) && isNaN(obj.añoLanzamiento)) {
                     className = obj.constructor.name;
                     switch (className) {
-                        case 'Docente':
-                            if (obj.materia && obj.año && isNaN(obj.materia) && !isNaN(obj.año)) {
+                        case 'Camioneta':
+                            if (obj.transmision4x4 && isNaN(obj.transmision4x4)) {
                                 validationResult = true;
                             }
                             break;
-                        case 'Alumno': 
+                        case 'Auto': 
 							console.log(obj);
-                            if (obj.cursoLetra && obj.cursoNumero && isNaN(obj.cursoLetra) && !isNaN(obj.cursoNumero) && obj.cursoLetra.length < 2) {
+                            if (obj.cantidadPuertas && isNaN(obj.cantidadPuertas) && obj.cantidadPuertas.length < 2) {
                                 validationResult = true;
                             }
                             break;
@@ -788,21 +769,21 @@
             let target;
 
             switch (selectedValue) {
-                case 'Docente':
-                    newObj = new Docente();
+                case 'Camioneta':
+                    newObj = new Camioneta();
                     newObj.id = valuesArray[0];
-                    newObj.dni = valuesArray[1];
-                    newObj.apellido = valuesArray[2];
-                    newObj.nombre = valuesArray[3];
+                    newObj.fabricante = valuesArray[1];
+                    newObj.modelo = valuesArray[2];
+                    newObj.añoLanzamiento = valuesArray[3];
                     newObj.setMateria(valuesArray[4]);
                     newObj.setAño(valuesArray[5]);
                     break;
-                case 'Alumno':
-					newObj = new Alumno();
+                case 'Auto':
+					newObj = new Auto();
                     newObj.id = valuesArray[0];
-                    newObj.dni = valuesArray[1];
-                    newObj.apellido = valuesArray[2];
-                    newObj.nombre = valuesArray[3];
+                    newObj.fabricante = valuesArray[1];
+                    newObj.modelo = valuesArray[2];
+                    newObj.añoLanzamiento = valuesArray[3];
                     newObj.setCursoLetra(valuesArray[4]);
                     newObj.setCursoNumero(valuesArray[5]);
                     break;
