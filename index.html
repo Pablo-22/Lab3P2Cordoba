@@ -279,13 +279,9 @@
 
     <script>
 		
-
-
-
-
 		let strJson = '';
 
-        var propNames = ['id', 'fabricante', 'modelo', 'añoLanzamiento', 'cantidadPuertas', 'transmision4x4', '' ];
+        var propNames = ['id', 'fabricante', 'modelo', 'añoLanzamiento', 'cantidadPuertas', 'transmision4x4' ];
         var tableHeaders = ['Id', 'Fabricante', 'Modelo', 'Año de lanzamiento', 'Cantidad de puertas', 'Transmisión 4x4', 'Modificar', 'Eliminar'];
         var filterValue = '';
         var isFormActivated = false;
@@ -318,7 +314,7 @@
 				}
 				
 			}; //Configúro manejador para cambio de estado
-			xhttp.open("GET", "https://localhost:5001/Personas", true); //Inicializo la solicitud
+			xhttp.open("GET", "https://localhost:5001/Vehiculos/Vehiculos", true); //Inicializo la solicitud
 			xhttp.send(); //Envio la solicitud
 		}
 
@@ -344,6 +340,12 @@
                 }
             }
 
+			setAñoLanzamiento(añoLanzamiento){
+				if (!isNaN(añoLanzamiento) && añoLanzamiento >= 2) {
+					this.añoLanzamiento = añoLanzamiento;
+				}
+			}
+
             toString(){
                 let finalString = '';
                 let objToArray = Object.entries(this);
@@ -367,13 +369,9 @@
                 this.cantidadPuertas = cantidadPuertas;
             }
 
-			setCursoLetra(letter){
-				letter = letter.toUpperCase();
-				console.log('LETRA ', letter);
-				let acceptedValues = ['A', 'B', 'C', 'D', 'E']
-				if (acceptedValues.includes(letter)) {
-					this.cantidadPuertas = letter;
-					console.log('LETRA CARGADO ', this.cantidadPuertas);
+			setCantidadPuertas(cantidadPuertas){
+				if (!isNaN(cantidadPuertas) && cantidadPuertas >= 2) {
+					this.cantidadPuertas = cantidadPuertas;
 				}
 			}
 
@@ -400,8 +398,8 @@
                 this.transmision4x4 = transmision4x4;
             }
 
-			setMateria(transmision4x4){
-				let acceptedValues = ['Matemática', 'Inglés', 'Lengua' ]
+			setTransmision4x4(transmision4x4){
+				let acceptedValues = ['SI', 'NO' ]
 				if (acceptedValues.includes(transmision4x4)) {
 					this.transmision4x4 = transmision4x4;
 				}
@@ -699,36 +697,34 @@
 						newObj.id = valuesArray[0];
 						newObj.fabricante = valuesArray[1];
 						newObj.modelo = valuesArray[2];
-						newObj.añoLanzamiento = valuesArray[3];
-						newObj.setMateria(valuesArray[4]);
-						newObj.setAño(valuesArray[5]);
+						newObj.setAñoLanzamiento(valuesArray[3]);
+						newObj.setTransmision4x4(valuesArray[4]);
 						break;
 					case 'Auto':
 						newObj = new Auto();
 						newObj.id = valuesArray[0];
 						newObj.fabricante = valuesArray[1];
 						newObj.modelo = valuesArray[2];
-						newObj.añoLanzamiento = valuesArray[3];
-						newObj.setCursoLetra(valuesArray[4]);
-						newObj.setCursoNumero(valuesArray[5]);
+						newObj.setAñoLanzamiento(valuesArray[3]);
+						newObj.setCantidadPuertas(valuesArray[4]);
 						break;
                 }
 
                     if (inputValidation(newObj)) {
-						putDataByFetch('https://localhost:5001/Personas/Insertar' + selectedValue, newObj)
+						putDataByFetch('https://localhost:5001/Vehiculos/Insertar' + selectedValue, newObj)
 						.then(response => {
 							if (response.status = 200) {
 								response.text().then(text => {
-									newObj.id = text;
+									newObj.id = JSON.parse(text).id;
 									console.log(newObj.toString());
 									finalOutputArray.push(newObj);
+									renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+									hideForm();
 								})
 							} else {
 								serverError();
 							}
 							toggleSpinner();
-							renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
-							hideForm()
 						});
 
                     }else {
@@ -742,7 +738,7 @@
         function inputValidation(obj){
             validationResult = false;
             if (obj) {
-                if (obj.fabricante && obj.modelo && obj.añoLanzamiento && !isNaN(obj.id) && !isNaN(obj.fabricante) && isNaN(obj.modelo) && isNaN(obj.añoLanzamiento)) {
+                if (obj.fabricante && obj.modelo && obj.añoLanzamiento && !isNaN(obj.id) && isNaN(obj.fabricante) && isNaN(obj.modelo) && !isNaN(obj.añoLanzamiento)) {
                     className = obj.constructor.name;
                     switch (className) {
                         case 'Camioneta':
@@ -752,7 +748,7 @@
                             break;
                         case 'Auto': 
 							console.log(obj);
-                            if (obj.cantidadPuertas && isNaN(obj.cantidadPuertas) && obj.cantidadPuertas.length < 2) {
+                            if (obj.cantidadPuertas && !isNaN(obj.cantidadPuertas)) {
                                 validationResult = true;
                             }
                             break;
@@ -774,18 +770,16 @@
                     newObj.id = valuesArray[0];
                     newObj.fabricante = valuesArray[1];
                     newObj.modelo = valuesArray[2];
-                    newObj.añoLanzamiento = valuesArray[3];
-                    newObj.setMateria(valuesArray[4]);
-                    newObj.setAño(valuesArray[5]);
+                    newObj.setAñoLanzamiento(valuesArray[3]);
+                    newObj.setTransmision4x4(valuesArray[4]);
                     break;
                 case 'Auto':
 					newObj = new Auto();
                     newObj.id = valuesArray[0];
                     newObj.fabricante = valuesArray[1];
                     newObj.modelo = valuesArray[2];
-                    newObj.añoLanzamiento = valuesArray[3];
-                    newObj.setCursoLetra(valuesArray[4]);
-                    newObj.setCursoNumero(valuesArray[5]);
+                    newObj.setAñoLanzamiento(valuesArray[3]);
+                    newObj.setCantidadPuertas(valuesArray[4]);
                     break;
             }
             if (inputValidation(newObj) ) {
@@ -794,7 +788,7 @@
                 })
 
 				toggleSpinner();
-				postDataByFetchAsync('https://localhost:5001/Personas/Modificar' + selectedValue, newObj).then( response => {
+				postDataByFetchAsync('https://localhost:5001/Vehiculos/Modificar' + selectedValue, newObj).then( response => {
 					toggleSpinner();
 					if (response.status = 200) {
 						finalOutputArray[targetIndex] = newObj;
@@ -896,7 +890,7 @@
 				}
 				
 			}; //Configúro manejador para cambio de estado
-			xhttp.open("DELETE", "https://localhost:5001/Personas/EliminarPersona", true); //Inicializo la solicitud
+			xhttp.open("DELETE", "https://localhost:5001/Vehiculos/EliminarVehiculo", true); //Inicializo la solicitud
 			xhttp.setRequestHeader('Content-Type', 'application/json');
 			let requestBody = JSON.stringify( finalOutputArray.filter(x => x.id == id)[0]);
 			xhttp.send( requestBody ); //Envio la solicitud
