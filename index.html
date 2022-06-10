@@ -269,6 +269,7 @@
                 <div class="abm-buttons">
                     <button id="deleteButton" onclick="onDeleteForm()">Eliminar</button>
                     <button id="editButton" onclick="onEdit()">Modificar</button>
+                    <button onclick="onAccept()">Aceptar</button>
                     <button onclick="onCancel()">Cancelar</button>
                 </div>
             </div>
@@ -285,37 +286,28 @@
         var tableHeaders = ['Id', 'Fabricante', 'Modelo', 'Año de lanzamiento', 'Cantidad de puertas', 'Transmisión 4x4', 'Modificar', 'Eliminar'];
         var filterValue = '';
         var isFormActivated = false;
+		var globalMode = '';
 		let finalOutputArray;
 
 		function getInitialData(){
-			var xhttp = new XMLHttpRequest(); //Instancio el objeto
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4)
-				{
-					if (this.status == 200) {
-						//Acción a ejecutar cuando el estado es 200 ok y el readyState=4 (respuesta lista)
-						
-						toggleTable();
-						
-						strJson = this.responseText;
-
+			toggleTable();
+			getDataByFetch('https://localhost:5001/Vehiculos/Vehiculos').then( response => {
+				if (response.status == 200) {
+					response.text().then( strJson => {
 						let newArray = jsonToArray(strJson); // Parsea los datos obtenidos a array
 
 						finalOutputArray = arrayToObject(newArray); // Convierte el array al objeto correspondiente
 
-						renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+						renderTable(finalOutputArray, propNames);
 						let btn = document.getElementById('addButton');
 						btn.style.display = 'initial';
 
 						toggleSpinner();
-					}else{
-						serverError();
-					}
+					});
+				}else{
+					serverError();
 				}
-				
-			}; //Configúro manejador para cambio de estado
-			xhttp.open("GET", "https://localhost:5001/Vehiculos/Vehiculos", true); //Inicializo la solicitud
-			xhttp.send(); //Envio la solicitud
+			});
 		}
 
         function jsonToArray(jsonString){
@@ -517,7 +509,7 @@
         }
         
 
-        function renderTable(fullDataSource, columnNames, filterCriteria, filterValue) {
+        function renderTable(fullDataSource, columnNames) {
 
             let filteredData = fullDataSource.filter(filterCriteria(filterValue));
 
@@ -525,7 +517,7 @@
             createTableContent(filteredData, columnNames);
         }
 
-        function calculateValue(fullDataSource, filterCriteria, filterValue){
+        function calculateValue(fullDataSource){
             let filteredData = fullDataSource.filter(filterCriteria(filterValue));
             let avg = filteredData
                 .map( function(a){ return a.id } )
@@ -573,8 +565,9 @@
 
 
         /********************** FORM **********************************/
-        function renderForm(obj, isEditMode){
+        function renderForm(obj, isEditMode, mode){
 			toggleTable();
+			
 
             let form = document.getElementById('abmForm');
             form.innerHTML = '';
@@ -666,6 +659,23 @@
                 addButton.disabled = false; 
             }
         }
+
+		function onAccept(){
+			switch (globalMode) {
+				case 'edit':
+					onEdit();
+					break;
+				case 'add':
+					onAdd();
+					break;
+				case 'delete':
+					onDeleteForm();
+					break;
+			
+				default:
+					break;
+			}
+		}
         /******************* FIN FORM *********************************/ 
 
         /************************** ABM ******************************/
@@ -711,22 +721,29 @@
                 }
 
                     if (inputValidation(newObj)) {
-						putDataByFetch('https://localhost:5001/Vehiculos/Insertar' + selectedValue, newObj)
-						.then(response => {
-							if (response.status = 200) {
-								response.text().then(text => {
-									newObj.id = JSON.parse(text).id;
+
+						var xhttp = new XMLHttpRequest(); //Instancio el objeto
+						xhttp.onreadystatechange = function() {
+							if (this.readyState == 4)
+							{
+								if (this.status == 200) {
+									//Acción a ejecutar cuando el estado es 200 ok y el readyState=4 (respuesta lista)
+									newObj.id = JSON.parse(this.responseText).id;
 									console.log(newObj.toString());
 									finalOutputArray.push(newObj);
-									renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+									renderTable(finalOutputArray, propNames);
 									hideForm();
-								})
-							} else {
-								serverError();
+								}else{
+									serverError();
+								}
+								toggleSpinner();
 							}
-							toggleSpinner();
-						});
-
+							
+						}; //Configúro manejador para cambio de estado
+						xhttp.open("PUT", "https://localhost:5001/Vehiculos/Insertar" + selectedValue, true); //Inicializo la solicitud
+						xhttp.setRequestHeader('Content-Type', 'application/json');
+						let requestBody = JSON.stringify( newObj );
+						xhttp.send( requestBody ); //Envio la solicitud
                     }else {
                         alert('Ha habido un error en los datos ingresados');
                     }
@@ -790,14 +807,16 @@
 				toggleSpinner();
 				postDataByFetchAsync('https://localhost:5001/Vehiculos/Modificar' + selectedValue, newObj).then( response => {
 					toggleSpinner();
-					if (response.status = 200) {
+					console.log(response.status);
+					if (response.status == 200) {
 						finalOutputArray[targetIndex] = newObj;
 					} else {
+						console.log(response);
 						serverError();
 					}
 					
 					hideForm();
-					renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
+					renderTable(finalOutputArray, propNames);
 				});
             }else {
                 alert('Ha habido un error en los datos ingresados.');
@@ -846,12 +865,33 @@
 			return response;
 		}
 
+		function getDataByFetch(url = '') {
+			// Opciones por defecto estan marcadas con un *
+			const response = fetch(url, {
+				method: 'GET', // *GET, POST, PUT, DELETE, etc.
+			});
+			return response;
+		}
+
 		function putDataByFetch(url = '', data = {}) {
 			console.log(url);
 			console.log(JSON.stringify(data));
 			// Opciones por defecto estan marcadas con un *
 			const response = fetch(url, {
 				method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data) // body data type must match "Content-Type" header
+			});
+			return response;
+		}
+
+		async function deleteDataByFetchAsync(url = '', data = {}) {
+			console.log(JSON.stringify(data));
+			// Opciones por defecto estan marcadas con un *
+			const response = await fetch(url, {
+				method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
 				headers: {
 					'Content-Type': 'application/json'
 				},
@@ -867,33 +907,23 @@
 		}
 
 
-        function onDeleteForm(){
+        async function onDeleteForm(){
 			toggleSpinner();
-            let id = document.getElementById('inputid').value;
+            let idTarget = document.getElementById('inputid').value;
 
-			var xhttp = new XMLHttpRequest(); //Instancio el objeto
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4)
-				{
-					if (this.status == 200) {
-						//Acción a ejecutar cuando el estado es 200 ok y el readyState=4 (respuesta lista)
-						
-						finalOutputArray = finalOutputArray.filter(x => x.id != id);
-						renderTable(finalOutputArray, propNames, filterCriteria, filterValue);
-						hideForm();
+			let params = {id: idTarget};
 
-						toggleSpinner();
-					}else{
-						serverError();
-						toggleSpinner();
-					}
-				}
-				
-			}; //Configúro manejador para cambio de estado
-			xhttp.open("DELETE", "https://localhost:5001/Vehiculos/EliminarVehiculo", true); //Inicializo la solicitud
-			xhttp.setRequestHeader('Content-Type', 'application/json');
-			let requestBody = JSON.stringify( finalOutputArray.filter(x => x.id == id)[0]);
-			xhttp.send( requestBody ); //Envio la solicitud
+			let response = await deleteDataByFetchAsync("https://localhost:5001/Vehiculos/EliminarVehiculo", params);
+			if (response.status == 200) {
+				finalOutputArray = finalOutputArray.filter(x => x.id != idTarget);
+				renderTable(finalOutputArray, propNames);
+				hideForm();
+
+				toggleSpinner();
+			}else{
+				serverError();
+				toggleSpinner();
+			}
         }
 
         function onCancel() {
