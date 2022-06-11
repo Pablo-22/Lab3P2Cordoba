@@ -127,7 +127,6 @@
             .add-btn{
                 margin-top: .8rem;
                 text-align: center;
-				display: none;
             }
 
 
@@ -260,6 +259,7 @@
 
         <div class="form-container" id="formContainer">
             <div class="card">
+				<h2 id="formHeader">Encabezado</h2>
                 <select class="form-select" name="formSelect" id="formSelect">
                     <option value="Camioneta">Camioneta</option>
                     <option value="Auto">Auto</option>
@@ -267,8 +267,6 @@
                 <form id="abmForm">
                 </form>
                 <div class="abm-buttons">
-                    <button id="deleteButton" onclick="onDeleteForm()">Eliminar</button>
-                    <button id="editButton" onclick="onEdit()">Modificar</button>
                     <button onclick="onAccept()">Aceptar</button>
                     <button onclick="onCancel()">Cancelar</button>
                 </div>
@@ -300,7 +298,7 @@
 
 						renderTable(finalOutputArray, propNames);
 						let btn = document.getElementById('addButton');
-						btn.style.display = 'initial';
+						btn.style.visibility = 'visible';
 
 						toggleSpinner();
 					});
@@ -331,6 +329,16 @@
                     this.id = getMaxId() + 1;
                 }
             }
+
+			toJsonString(conId){
+				if (conId) {
+					return JSON.stringify(this);
+				} else {
+					let aux = JSON.parse(JSON.stringify(this));
+					delete aux.id;
+					return JSON.stringify(aux);
+				}
+			}
 
 			setAñoLanzamiento(añoLanzamiento){
 				if (!isNaN(añoLanzamiento) && añoLanzamiento >= 2) {
@@ -477,7 +485,7 @@
 				btn.appendChild(document.createTextNode(btnText));
 
 				btn.addEventListener('click', function onRowDoubleClicked(event) {
-                    renderForm(e, true);
+                    renderForm(e, 'edit');
                     
                 });
 
@@ -490,7 +498,7 @@
 				btnText = 'Eliminar';
 
 				btn.addEventListener('click', function onRowDoubleClicked(event) {
-                    renderForm(e, true);
+                    renderForm(e, 'delete');
                     
                 });
 
@@ -499,12 +507,6 @@
 				tr.appendChild(td);
 
                 tableBody.appendChild(tr);
-
-                let row = document.getElementById(e.id);
-                row.addEventListener('dblclick', function onRowDoubleClicked(event) {
-                    renderForm(e, true);
-                    
-                });
             });
         }
         
@@ -565,8 +567,12 @@
 
 
         /********************** FORM **********************************/
-        function renderForm(obj, isEditMode, mode){
+        function renderForm(obj, mode){
 			toggleTable();
+			globalMode = mode;
+			setFormHeader();
+			let addBtn = document.getElementById('addButton');
+			addBtn.style.visibility = 'hidden';
 			
 
             let form = document.getElementById('abmForm');
@@ -619,8 +625,8 @@
             idInput.readOnly = true;
 
             isFormActivated = true;
-            editMode(isEditMode);
-            if (isEditMode) {
+
+            if (mode == 'edit') {
                 formSelect.style.visibility = 'hidden';
             }else {
                 formSelect.style.visibility = 'visible';
@@ -632,35 +638,17 @@
             let formContainer = document.getElementById('formContainer');
             formContainer.style.display = 'none'; 
             isFormActivated = false;
-
-            let addButton = document.getElementById('addButton');
-            addButton.disabled = false;
         }
 
 		let formSelect = document.getElementById('formSelect');
         formSelect.addEventListener('change', function onChange(event){
-            renderForm();
+            renderForm(null, 'add');
 			toggleTable();
         })
 
-
-        function editMode(toggle) { 
-            let editButton = document.getElementById('editButton');
-            let deleteButton = document.getElementById('deleteButton');
-            let addButton = document.getElementById('addButton');
-
-            if (toggle) {
-                editButton.disabled = false;
-                deleteButton.disabled = false;
-                addButton.disabled = true; 
-            }else {
-                editButton.disabled = true;
-                deleteButton.disabled = true;
-                addButton.disabled = false; 
-            }
-        }
-
 		function onAccept(){
+			let addBtn = document.getElementById('addButton');
+			addBtn.style.visibility = 'visible';
 			switch (globalMode) {
 				case 'edit':
 					onEdit();
@@ -670,6 +658,26 @@
 					break;
 				case 'delete':
 					onDeleteForm();
+					break;
+			
+				default:
+					break;
+			}
+		}
+
+		function setFormHeader(){
+			let addBtn = document.getElementById('addButton');
+			btn.style.visibility = 'visible';
+			let formHeader = document.getElementById('formHeader');
+			switch (globalMode) {
+				case 'edit':
+					formHeader.innerText = 'Modificar';
+					break;
+				case 'add':
+					formHeader.innerText = 'Añadir';
+					break;
+				case 'delete':
+					formHeader.innerText = 'Eliminar';
 					break;
 			
 				default:
@@ -748,7 +756,7 @@
                         alert('Ha habido un error en los datos ingresados');
                     }
             }else {
-                renderForm(null, false);
+                renderForm(null, 'add');
             }
         }
 
@@ -764,7 +772,6 @@
                             }
                             break;
                         case 'Auto': 
-							console.log(obj);
                             if (obj.cantidadPuertas && !isNaN(obj.cantidadPuertas)) {
                                 validationResult = true;
                             }
@@ -807,11 +814,9 @@
 				toggleSpinner();
 				postDataByFetchAsync('https://localhost:5001/Vehiculos/Modificar' + selectedValue, newObj).then( response => {
 					toggleSpinner();
-					console.log(response.status);
 					if (response.status == 200) {
 						finalOutputArray[targetIndex] = newObj;
 					} else {
-						console.log(response);
 						serverError();
 					}
 					
@@ -824,8 +829,6 @@
         }
 
 		async function postDataByFetchAsync(url = '', data = {}) {
-			console.log(url);
-			console.log(JSON.stringify(data));
 			// Opciones por defecto estan marcadas con un *
 			const response = await fetch(url, {
 				method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -838,8 +841,6 @@
 		}
 
 		async function putDataByFetchAsync(url = '', data = {}) {
-			console.log(url);
-			console.log(JSON.stringify(data));
 			// Opciones por defecto estan marcadas con un *
 			const response = await fetch(url, {
 				method: 'PUT', // *GET, POST, PUT, DELETE, etc.
@@ -852,8 +853,6 @@
 		}
 
 		function postDataByFetch(url = '', data = {}) {
-			console.log(url);
-			console.log(JSON.stringify(data));
 			// Opciones por defecto estan marcadas con un *
 			const response = fetch(url, {
 				method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -874,8 +873,6 @@
 		}
 
 		function putDataByFetch(url = '', data = {}) {
-			console.log(url);
-			console.log(JSON.stringify(data));
 			// Opciones por defecto estan marcadas con un *
 			const response = fetch(url, {
 				method: 'PUT', // *GET, POST, PUT, DELETE, etc.
@@ -888,7 +885,6 @@
 		}
 
 		async function deleteDataByFetchAsync(url = '', data = {}) {
-			console.log(JSON.stringify(data));
 			// Opciones por defecto estan marcadas con un *
 			const response = await fetch(url, {
 				method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
@@ -928,6 +924,8 @@
 
         function onCancel() {
             hideForm();
+			let addBtn = document.getElementById('addButton');
+			addBtn.style.visibility = 'visible';
         }
         /************************** ABM ******************************/
 
