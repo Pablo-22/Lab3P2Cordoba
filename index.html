@@ -626,10 +626,10 @@
 
             isFormActivated = true;
 
-            if (mode == 'edit') {
+            if (mode == 'add') {
+				formSelect.style.visibility = 'visible';
+			} else {
                 formSelect.style.visibility = 'hidden';
-            }else {
-                formSelect.style.visibility = 'visible';
             }
         }
 
@@ -647,8 +647,6 @@
         })
 
 		function onAccept(){
-			let addBtn = document.getElementById('addButton');
-			addBtn.style.visibility = 'visible';
 			switch (globalMode) {
 				case 'edit':
 					onEdit();
@@ -745,6 +743,9 @@
 									serverError();
 								}
 								toggleSpinner();
+								
+								let addBtn = document.getElementById('addButton');
+								addBtn.style.visibility = 'visible';
 							}
 							
 						}; //Configúro manejador para cambio de estado
@@ -822,6 +823,9 @@
 					
 					hideForm();
 					renderTable(finalOutputArray, propNames);
+					
+					let addBtn = document.getElementById('addButton');
+					addBtn.style.visibility = 'visible';
 				});
             }else {
                 alert('Ha habido un error en los datos ingresados.');
@@ -920,6 +924,9 @@
 				serverError();
 				toggleSpinner();
 			}
+			
+			let addBtn = document.getElementById('addButton');
+			addBtn.style.visibility = 'visible';
         }
 
         function onCancel() {
